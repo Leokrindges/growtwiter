@@ -4,23 +4,30 @@ import { Tweet } from './tweet';
 
 export class User {
     private id: String = randomUUID();
+    private _tweet: Tweet[] = []
+    private usernames: string[] = []
+
     constructor(
         private _name: string,
-        private _usernames: string[] = [],
+        private _username: string,
         private _email: string,
         private _password: string,
-        private _tweet: Tweet[] = []
-    ) { }
+    ) {
+        this.validateData()
+    }
 
     public set name(newName: string) {
         this._name = newName;
     }
 
+    private validateData() {
+        this.checkPassword(this._password)
+        this.checkAvailabilityUsername(this._username)
+    }
+
     public set username(newUsername: string) {
-        if (this.checkAvailabilityUsername(newUsername)) {
-            throw error("Já existe um usário com este Username, por favor, escolha outro.")
-        }
-        this._usernames.push(newUsername)
+        this.checkAvailabilityUsername(newUsername)
+
     }
 
     public set email(newEmail: string) {
@@ -28,39 +35,22 @@ export class User {
     }
 
     public set password(newPassword: string) {
-        if (!this.checkPassword(newPassword)) {
-            throw error(`Senha deve ter no minímo 8 caracteres e um caracter especial.\n`)
-        }
-        this._password = newPassword
+        this.checkPassword(newPassword)
     }
 
-    //Verifica disponibilidade do username
-    private checkAvailabilityUsername(newUsername: string): boolean {
-        const existeUsername = this._usernames.find((username) => username = newUsername)
-
-        if (existeUsername) {
-            return true
-        }
-        return false
-    }
-
-    //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
-    private checkPassword(newPassword: string): boolean {
-        const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"]
-
-        for (let i = 0; i < newPassword.length; i++) {
-            const auxChar = newPassword.substring(i, i)
-            dictionaryCharacters.forEach(character => {
-                if (newPassword.length > 8 && character === auxChar) {
-                    return true
-                }
-            });
-        }
-        return false
-    }
 
     //enviar tweet
-    public sendTweet(tweet: string) { }
+    public sendTweet(newTweet: Tweet) {
+        this.formatTweet(newTweet)
+
+        this._tweet.push(newTweet)
+    }
+
+    private formatTweet(newTweet: Tweet): string {
+        const formattedTweet: string = `@${this.usernames}: ${newTweet.content}`
+
+        return formattedTweet
+    }
 
     //seguir
     public follow() { }
@@ -72,6 +62,57 @@ export class User {
     showTweet() { }
 
 
+    //Verifica disponibilidade do username
+    private checkAvailabilityUsername(newUsername: string) {
+        console.log("entrou");
+
+        if (this.usernames.length === 0) {
+            console.log(this.usernames.length);
+
+            this.usernames.push(newUsername)
+            console.log("armazenou");
+
+        }
+        if (this.usernames.length > 0) {
+            const existeUsername = this.usernames.find((username) => username = newUsername)
+            console.log(existeUsername);
+            if (existeUsername) {
+                throw error("Já existe um usário com este Username, por favor, escolha outro.")
+            } else {
+                this.usernames.push(newUsername)
+                return
+            }
+        }
+
+
+    }
+
+    //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
+    private checkPassword(newPassword: string) {
+        const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"];
+        let containsSpecialCharacter = false;
+
+        if (newPassword.length < 8) {
+            throw new Error("Senha deve ter no mínimo 8 caracteres.");
+        }
+
+        for (let i = 0; i <= newPassword.length; i++) {
+
+            for (let j = 0; j < dictionaryCharacters.length; j++) {
+                if (dictionaryCharacters[j] === newPassword[i]) {
+                    containsSpecialCharacter = true;
+                    break;  // Sai do loop interno assim que uma correspondência é encontrada.
+                }
+            }
+            if (containsSpecialCharacter) {
+                this._password = newPassword;
+                break
+            }
+            if (i === newPassword.length && !containsSpecialCharacter) {
+                throw new Error("Senha deve ter pelo menos um caractere especial.");
+            }
+        }
+    }
 
 
 }
