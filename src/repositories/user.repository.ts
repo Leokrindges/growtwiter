@@ -6,13 +6,23 @@ import { User } from "../models/user";
 export class UserRepositoryInMemory implements UserRepository {
 
     public create(newUser: User): void {
-        const found = users.some((user) => user.email === newUser.email)
 
-        if (found) {
-            throw Error("E-mail já cadastrado")
+        const existsUsername = users.some((user) => user.username === newUser.username);
+
+        if (existsUsername) {
+            throw Error('Já existe esse username')
         }
 
+        const existsEmail = users.some((user) => user.email === newUser.email)
+
+        if (existsEmail) {
+            throw Error('Já existe esse E-mail cadastrado')
+        }
         users.push(newUser)
+
     }
 
 }
+
+
+//like == comment

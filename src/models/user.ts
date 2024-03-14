@@ -1,11 +1,10 @@
-import { error } from 'console';
 import { randomUUID } from 'crypto';
 import { Tweet } from './tweet';
+import { UserRepositoryInMemory } from '../repositories/user.repository';
 
 export class User {
     private id: String = randomUUID();
-    private _tweet: Tweet[] = []
-    private usernames: string[] = []
+    private followers: String[] = []
 
     constructor(
         private _name: string,
@@ -16,44 +15,39 @@ export class User {
         this.validateData()
     }
 
+    private validateData(): void {
+        this.checkPassword()
+
+    }
+
     public set name(newName: string) {
         this._name = newName;
     }
 
-    private validateData() {
-        this.checkPassword(this._password)
-        this.checkAvailabilityUsername(this._username)
+    public get username(): string {
+        return this._username
+    }
+    public get email(): string {
+        return this._email
     }
 
     public set username(newUsername: string) {
-        this.checkAvailabilityUsername(newUsername)
-
+        this._username = newUsername
     }
 
     public set email(newEmail: string) {
         this._email = newEmail;
     }
 
-    public set password(newPassword: string) {
-        this.checkPassword(newPassword)
-    }
-
-
     //enviar tweet
     public sendTweet(newTweet: Tweet) {
-        this.formatTweet(newTweet)
 
-        this._tweet.push(newTweet)
-    }
-
-    private formatTweet(newTweet: Tweet): string {
-        const formattedTweet: string = `@${this.usernames}: ${newTweet.content}`
-
-        return formattedTweet
     }
 
     //seguir
-    public follow() { }
+    public follow() {
+
+    }
 
     //Mostrar feed
     public showFeed() { }
@@ -61,54 +55,28 @@ export class User {
     //Mostrar Tweets
     showTweet() { }
 
-
-    //Verifica disponibilidade do username
-    private checkAvailabilityUsername(newUsername: string) {
-        console.log("entrou");
-
-        if (this.usernames.length === 0) {
-            console.log(this.usernames.length);
-
-            this.usernames.push(newUsername)
-            console.log("armazenou");
-
-        }
-        if (this.usernames.length > 0) {
-            const existeUsername = this.usernames.find((username) => username = newUsername)
-            console.log(existeUsername);
-            if (existeUsername) {
-                throw error("Já existe um usário com este Username, por favor, escolha outro.")
-            } else {
-                this.usernames.push(newUsername)
-                return
-            }
-        }
-
-
-    }
-
     //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
-    private checkPassword(newPassword: string) {
+    private checkPassword() {
         const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"];
         let containsSpecialCharacter = false;
 
-        if (newPassword.length < 8) {
+        if (this._password.length < 8) {
             throw new Error("Senha deve ter no mínimo 8 caracteres.");
         }
 
-        for (let i = 0; i <= newPassword.length; i++) {
+        for (let i = 0; i <= this._password.length; i++) {
 
             for (let j = 0; j < dictionaryCharacters.length; j++) {
-                if (dictionaryCharacters[j] === newPassword[i]) {
+                if (dictionaryCharacters[j] === this._password[i]) {
                     containsSpecialCharacter = true;
                     break;  // Sai do loop interno assim que uma correspondência é encontrada.
                 }
             }
             if (containsSpecialCharacter) {
-                this._password = newPassword;
+                this._password = this._password;
                 break
             }
-            if (i === newPassword.length && !containsSpecialCharacter) {
+            if (i === this._password.length && !containsSpecialCharacter) {
                 throw new Error("Senha deve ter pelo menos um caractere especial.");
             }
         }
