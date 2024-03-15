@@ -1,10 +1,12 @@
 import { randomUUID } from 'crypto';
 import { Tweet } from './tweet';
 import { UserRepositoryInMemory } from '../repositories/user.repository';
+import { TweetRepositoryInMemory } from '../repositories/tweet.repository';
 
 export class User {
-    private id: String = randomUUID();
-    private followers: String[] = []
+    private _id: String = randomUUID();
+    private _followers: String[] = []
+    private _tweets: Array<Tweet> = []
 
     constructor(
         private _name: string,
@@ -15,33 +17,30 @@ export class User {
         this.validateData()
     }
 
-    private validateData(): void {
-        this.checkPassword()
-
-    }
-
-    public set name(newName: string) {
-        this._name = newName;
-    }
-
+    public get name(): string {
+        return this._name
+    }    
     public get username(): string {
         return this._username
     }
     public get email(): string {
         return this._email
     }
-
-    public set username(newUsername: string) {
-        this._username = newUsername
+    public get password(): string {
+        return this.password
+    }
+    public get tweets(): Tweet[] {
+        return this.tweets
     }
 
-    public set email(newEmail: string) {
-        this._email = newEmail;
+    private validateData(): void {
+        this.checkPassword()
     }
 
     //enviar tweet
-    public sendTweet(newTweet: Tweet) {
-
+    public sendTweet(content: string): void {
+        const newTweet = new Tweet(content,"Normal",this)
+        new UserRepositoryInMemory().addTweet(newTweet)
     }
 
     //seguir
@@ -53,7 +52,11 @@ export class User {
     public showFeed() { }
 
     //Mostrar Tweets
-    showTweet() { }
+    showTweet() {
+        this._tweets.forEach(tweet => {
+            tweet.show(this._username)
+        });
+    }
 
     //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
     private checkPassword() {
