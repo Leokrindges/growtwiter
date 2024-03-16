@@ -1,4 +1,4 @@
-import { like } from "../models/like";
+import { Like } from "../models/like";
 
 
-export const likes: like[] = []
+export const likes: Like[] = []

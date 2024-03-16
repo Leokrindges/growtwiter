@@ -1,12 +1,12 @@
 import { randomUUID } from 'crypto';
 import { Tweet } from './tweet';
-import { UserRepositoryInMemory } from '../repositories/user.repository';
-import { TweetRepositoryInMemory } from '../repositories/tweet.repository';
+import { Like } from './like';
+import { users } from '../databases/user.databese';
 
 export class User {
-    private _id: String = randomUUID();
-    private _followers: String[] = []
-    private _tweets: Array<Tweet> = []
+    private _id: string = randomUUID()
+    private _followers: User[] = []
+    private _tweets: Tweet[] = []
 
     constructor(
         private _name: string,
@@ -14,12 +14,11 @@ export class User {
         private _email: string,
         private _password: string,
     ) {
-        this.validateData()
     }
 
     public get name(): string {
         return this._name
-    }    
+    }
     public get username(): string {
         return this._username
     }
@@ -29,18 +28,25 @@ export class User {
     public get password(): string {
         return this.password
     }
-    public get tweets(): Tweet[] {
-        return this.tweets
+    public get id(): string {
+        return this._id
     }
-
-    private validateData(): void {
-        this.checkPassword()
+    public get followers(): User[] {
+        return this._followers
+    }
+    public get tweets(): Tweet[] {
+        return this._tweets
     }
 
     //enviar tweet
-    public sendTweet(content: string): void {
-        const newTweet = new Tweet(content,"Normal",this)
-        new UserRepositoryInMemory().addTweet(newTweet)
+    public sendTweet(newTweet: Tweet): void {
+        // const newTweet = new Tweet(content,"Normal",this)
+        
+        if(newTweet.user._username === this._username){
+            this.tweets.push(newTweet)
+        }else{
+            throw Error("Não é possivel adicionar enviar tweet criado por outra pessoa")
+        }       
     }
 
     //seguir
@@ -49,13 +55,25 @@ export class User {
     }
 
     //Mostrar feed
-    public showFeed() { }
+    public showFeed(): void {
+        this.showTweet()
+    }
 
     //Mostrar Tweets
-    showTweet() {
-        this._tweets.forEach(tweet => {
-            tweet.show(this._username)
+    public showTweet() {
+        
+        console.log(`FEED DE TWEETS DO ${this._username} `);
+        console.log();
+        
+        this.tweets.forEach(element => {
+            element.show(element)
+            console.log();
         });
+    }
+    private validateData(): void {
+        this.checkPassword()
+        this.checkUsername()
+        this.checkEmail()
     }
 
     //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
@@ -85,5 +103,24 @@ export class User {
         }
     }
 
+    private checkUsername(): void {
+        const existsUsername = users.some((user) => user.username === this.username);
 
+        if (existsUsername) {
+            throw Error('Já existe esse username')
+        }
+    }
+
+    private checkEmail(): void {
+        const existsEmail = users.some((user) => user.email === this.email)
+
+        if (existsEmail) {
+            throw Error('Já existe esse e-mail cadastrado')
+        }
+    }
+
+    public createUsers(newUser: User): void {
+        this.validateData()       
+        users.push(newUser)        
+    }
 }
