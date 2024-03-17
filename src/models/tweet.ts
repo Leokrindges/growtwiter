@@ -44,40 +44,65 @@ export class Tweet {
         likes.push(newLike)
     }
 
-    public show(tweet: Tweet): void {
-        let showLikesFormatted: string = this.showLikes(tweet)
-        console.log(`@<${tweet._user.username}>: <${this._content}>\n${showLikesFormatted}`);
+    public show(tweet: Tweet, followers: User[]): void {
+        // const showLikesFormatted: string = this.showLikes(tweet)
+        // console.log(`@<${tweet._user.username}>: <${this._content}>\n${showLikesFormatted}`);
+        this.showLikes(tweet)
+        this.showTweetsFollowers(followers)
+
 
         // <likes> ${this.countLikeTweet(this)}
         // <replies>`
     }
-
-
-
-    private showLikes(tweet: Tweet): string {
-        let contador: number= 0
+    private showLikes(tweet: Tweet): void {
+        let counter: number = 0
         let whoLiked: string = ""
 
         likes.forEach((like) => {
-            if (like.tweet._id === tweet._id) {                
-                contador++
-                
-                whoLiked = like.from.username                
+            if (like.tweet._id === tweet._id) {
+                counter++
+
+                whoLiked = like.from.username
             }
         });
-        
-        if (contador === 1) {
-            return `@<${whoLiked}> curtiu`
-        } 
-        if (contador === 2) {
-            return `@<${whoLiked}> e mais ${likes.length - 1} usuário curtiu`
-        }
-        if (contador > 2) {
-            return `@<${whoLiked}> e mais ${likes.length - 1} usuários curtiram`
-        }
-        return ""
+        console.log(this.formattedTweets(tweet._user.username, this.content, whoLiked, counter)
+        );
+
     }
 
+    private showTweetsFollowers(followers: User[]): void {
+        let counter: number = 0
+        let whoLiked: string = ""
+
+        followers.forEach(follow => {
+            follow.tweets.forEach(tweetsFollowers => {
+                counter = 0
+                likes.forEach((like) => {
+                    if (like.tweet._id === tweetsFollowers._id) {
+                        counter++
+
+                        whoLiked = like.from.username
+                    }
+                })
+                console.log(this.formattedTweets(tweetsFollowers._user.username, tweetsFollowers._content, whoLiked, counter))
+            })
+        })
+    }
+
+    private formattedTweets(username: string, content: string, whoLiked: string, likeAccountTweet: number): string {
+        let likesFormatted: string = ""
+        if (likeAccountTweet === 1) {
+            likesFormatted = `@<${whoLiked}> curtiu\n`
+        }
+        if (likeAccountTweet === 2) {
+            likesFormatted = `@<${whoLiked}> e mais ${likeAccountTweet - 1} usuário curtiu\n`
+        }
+        if (likeAccountTweet > 2) {
+            likesFormatted = `@<${whoLiked}> e mais ${likeAccountTweet - 1} usuários curtiram\n`
+        }
+
+        return `@<${username}>: <${content}>\n${likesFormatted}`
+    }
 
 
     //mostrar respostas

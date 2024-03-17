@@ -50,8 +50,11 @@ export class User {
     }
 
     //seguir
-    public follow() {
-
+    public follow(followers: User) {
+        // console.log(followers);
+        // console.log(this._name);
+        
+        this._followers.push(followers)
     }
 
     //Mostrar feed
@@ -62,13 +65,13 @@ export class User {
     //Mostrar Tweets
     public showTweet() {
         
-        console.log(`FEED DE TWEETS DO ${this._username} `);
-        console.log();
-        
-        this.tweets.forEach(element => {
-            element.show(element)
-            console.log();
+        console.log(`FEED DE TWEETS DO ${this._username.toLocaleUpperCase()} `);
+
+        this.tweets.forEach(tweet => {
+            tweet.show(tweet, this.followers)
         });
+
+
     }
     private validateData(): void {
         this.checkPassword()
