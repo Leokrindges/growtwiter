@@ -38,33 +38,42 @@ export class User {
         return this._tweets
     }
 
-    //enviar tweet
+    // Objetivo: Adicionar Tweets
     public sendTweet(newTweet: Tweet): void {
         // const newTweet = new Tweet(content,"Normal",this)
-        
-        if(newTweet.user._username === this._username){
+
+        if (newTweet.user._username === this._username) {
             this.tweets.push(newTweet)
-        }else{
+        } else {
             throw Error("Não é possivel adicionar enviar tweet criado por outra pessoa")
-        }       
+        }
     }
 
-    //seguir
+    // Objetivo: adicionar seguidores
     public follow(followers: User) {
-        // console.log(followers);
-        // console.log(this._name);
-        
+        if (followers._username === this._username) {
+            throw Error("Can't follow your")
+        }
         this._followers.push(followers)
     }
 
-    //Mostrar feed
+    // Objetivo: Mostrar a lista de seguidores do usuário logado
+    public showFollowers(): void{
+        console.log(`Followers of ${this._username}\n------------------------------------\n`);
+        this._followers.forEach(follow => {
+            console.log("Username: ",follow._username,"\n------------------------------------");
+            
+        })
+    }
+
+    // Objetivo: Mostrar feed do usuário
     public showFeed(): void {
         this.showTweet()
     }
 
-    //Mostrar Tweets
-    public showTweet() {
-        
+    // Objetivo mostrar tweetes do
+    private showTweet() {
+
         console.log(`FEED DE TWEETS DO ${this._username.toLocaleUpperCase()} `);
 
         this.tweets.forEach(tweet => {
@@ -73,6 +82,7 @@ export class User {
 
 
     }
+    // Objetivo: Validar os dados de entrada
     private validateData(): void {
         this.checkPassword()
         this.checkUsername()
@@ -106,6 +116,7 @@ export class User {
         }
     }
 
+   // Objetiv: Verificar se username já esta cadastrado
     private checkUsername(): void {
         const existsUsername = users.some((user) => user.username === this.username);
 
@@ -114,6 +125,7 @@ export class User {
         }
     }
 
+    // Objetiv: Verificar se email já esta cadastrado
     private checkEmail(): void {
         const existsEmail = users.some((user) => user.email === this.email)
 
@@ -122,8 +134,9 @@ export class User {
         }
     }
 
+    // Objetivo: criar usuários
     public createUsers(newUser: User): void {
-        this.validateData()       
-        users.push(newUser)        
+        this.validateData()
+        users.push(newUser)
     }
 }

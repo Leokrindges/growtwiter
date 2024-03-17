@@ -26,6 +26,7 @@ pedro.sendTweet(tweet3)
 // leonardo.sendTweet("segundo tweet leonardo")
 
 pedro.follow(leonardo)
+pedro.follow(je)
 
 //CURTIR TWEET
 tweet1.like(leonardo)
@@ -33,6 +34,7 @@ tweet1.like(je)
 tweet2.like(je)
 tweet1.like(pedro)
 
+pedro.showFollowers()
 // leonardo.showFeed()
 pedro.showFeed()
 

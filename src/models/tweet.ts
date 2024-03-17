@@ -3,6 +3,7 @@ import { User } from "./user";
 import { Like } from "./like";
 import { likes } from "../databases/like.database";
 import { tweets } from "../databases/tweet.database";
+import { log } from "console";
 export type Type = "Normal" | "Reply"
 
 export class Tweet {
@@ -35,26 +36,28 @@ export class Tweet {
         return this._user
     }
 
-    //responder
+    //Objetivo: responder os Tweets 
     reply(content: string) { }
 
+    // Objetivo: Curtir os tweets
     public like(user: User): void {
         const newLike = new Like(user, this)
-
         likes.push(newLike)
     }
 
+    // Objetivo: Mostrar todos tweets do usuario e seus seguidores
     public show(tweet: Tweet, followers: User[]): void {
-        // const showLikesFormatted: string = this.showLikes(tweet)
-        // console.log(`@<${tweet._user.username}>: <${this._content}>\n${showLikesFormatted}`);
-        this.showLikes(tweet)
+
+        this.showTweetUserLogged(tweet)
+        console.log("----------------------------------------`");
+
         this.showTweetsFollowers(followers)
 
-
-        // <likes> ${this.countLikeTweet(this)}
         // <replies>`
     }
-    private showLikes(tweet: Tweet): void {
+
+    //Objetivo: mostrar os tweets do usuário logado
+    private showTweetUserLogged(tweet: Tweet): void {
         let counter: number = 0
         let whoLiked: string = ""
 
@@ -69,7 +72,8 @@ export class Tweet {
         );
 
     }
-
+    
+    // Mostrar os tweets dos seguidores do usuário logado
     private showTweetsFollowers(followers: User[]): void {
         let counter: number = 0
         let whoLiked: string = ""
@@ -92,13 +96,13 @@ export class Tweet {
     private formattedTweets(username: string, content: string, whoLiked: string, likeAccountTweet: number): string {
         let likesFormatted: string = ""
         if (likeAccountTweet === 1) {
-            likesFormatted = `@<${whoLiked}> curtiu\n`
+            likesFormatted = `@<${whoLiked}> liked this\n----------------------------------------`
         }
         if (likeAccountTweet === 2) {
-            likesFormatted = `@<${whoLiked}> e mais ${likeAccountTweet - 1} usuário curtiu\n`
+            likesFormatted = `@<${whoLiked}> and other ${likeAccountTweet - 1} user liked this\n----------------------------------------`
         }
         if (likeAccountTweet > 2) {
-            likesFormatted = `@<${whoLiked}> e mais ${likeAccountTweet - 1} usuários curtiram\n`
+            likesFormatted = `@<${whoLiked}> and other ${likeAccountTweet - 1} users liked this\n----------------------------------------`
         }
 
         return `@<${username}>: <${content}>\n${likesFormatted}`
