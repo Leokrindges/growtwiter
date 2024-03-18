@@ -2,13 +2,13 @@ import { randomUUID } from "crypto";
 import { User } from "./user";
 import { Like } from "./like";
 import { likes } from "../databases/like.database";
-import { tweets } from "../databases/tweet.database";
-import { log } from "console";
+
 export type Type = "Normal" | "Reply"
 
 export class Tweet {
     private _id: string = randomUUID()
     private _likes: Like[] = [];
+    private _replies: Tweet[] = [];
 
     constructor(
         private _content: string,
@@ -23,57 +23,49 @@ export class Tweet {
     public get likes(): Like[] {
         return this._likes
     }
-    //Conteúdo
+
     public get content(): string {
         return this._content
     }
 
-    //tipo
     public get type(): string {
         return this._type
     }
+
     public get user(): User {
         return this._user
     }
 
-    //Objetivo: responder os Tweets 
-    reply(content: string) { }
+    reply(content: string, user: User) {
+        const replyTweet = new Tweet(content, "Reply", user)
+        this._replies.push(replyTweet);
+    }
 
-    // Objetivo: Curtir os tweets
-    public like(user: User): void {
+    like(user: User): void {
         const newLike = new Like(user, this)
-        likes.push(newLike)
+        likes.push(newLike);
     }
 
-    // Objetivo: Mostrar todos tweets do usuario e seus seguidores
-    public show(tweet: Tweet, followers: User[]): void {
-
-        this.showTweetUserLogged(tweet)
-        console.log("----------------------------------------`");
-
-        this.showTweetsFollowers(followers)
-
-        // <replies>`
+    show(tweet: Tweet, followers: User[]): void {
+        this.showTweetUserLogged(tweet);
+        this.showTweetsFollowers(followers);
     }
 
-    //Objetivo: mostrar os tweets do usuário logado
     private showTweetUserLogged(tweet: Tweet): void {
-        let counter: number = 0
-        let whoLiked: string = ""
+        let counter: number = this._likes.length;
+        let whoLiked: string = "";
 
         likes.forEach((like) => {
-            if (like.tweet._id === tweet._id) {
-                counter++
-
-                whoLiked = like.from.username
+            if (like.tweet.id === tweet.id) {
+                counter++;
+                whoLiked = like.from.username;
             }
         });
-        console.log(this.formattedTweets(tweet._user.username, this.content, whoLiked, counter)
-        );
 
+        console.log(this.formattedTweets(tweet.user.username, this.content, whoLiked, counter),
+            this.showReplies(tweet));
     }
-    
-    // Mostrar os tweets dos seguidores do usuário logado
+
     private showTweetsFollowers(followers: User[]): void {
         let counter: number = 0
         let whoLiked: string = ""
@@ -88,27 +80,34 @@ export class Tweet {
                         whoLiked = like.from.username
                     }
                 })
-                console.log(this.formattedTweets(tweetsFollowers._user.username, tweetsFollowers._content, whoLiked, counter))
+                console.log(this.formattedTweets(tweetsFollowers._user.username, tweetsFollowers._content, whoLiked, counter),this.showReplies(tweetsFollowers))
+                
             })
         })
     }
 
     private formattedTweets(username: string, content: string, whoLiked: string, likeAccountTweet: number): string {
+
         let likesFormatted: string = ""
         if (likeAccountTweet === 1) {
-            likesFormatted = `@<${whoLiked}> liked this\n----------------------------------------`
+            likesFormatted = `@${whoLiked} liked this`
         }
         if (likeAccountTweet === 2) {
-            likesFormatted = `@<${whoLiked}> and other ${likeAccountTweet - 1} user liked this\n----------------------------------------`
+            likesFormatted = `@${whoLiked} and other ${likeAccountTweet - 1} user liked this`
         }
         if (likeAccountTweet > 2) {
-            likesFormatted = `@<${whoLiked}> and other ${likeAccountTweet - 1} users liked this\n----------------------------------------`
+            likesFormatted = `@${whoLiked} and other ${likeAccountTweet - 1} users liked this\n`
         }
 
-        return `@<${username}>: <${content}>\n${likesFormatted}`
+        return `\n@${username}: ${content}\n${likesFormatted}`
     }
 
-
-    //mostrar respostas
-    showReplies() { }
+    private showReplies(tweet: Tweet): string {
+        
+        let replyFormatted = "";
+        this._replies.forEach((reply) => {
+            replyFormatted += `  > @${reply.user.username}: ${reply.content}\n `;
+        });
+        return replyFormatted;
+    }
 }

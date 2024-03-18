@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Tweet } from './tweet';
-import { Like } from './like';
 import { users } from '../databases/user.databese';
+import { tweets } from '../databases/tweet.database';
 
 export class User {
     private _id: string = randomUUID()
@@ -40,13 +40,14 @@ export class User {
 
     // Objetivo: Adicionar Tweets
     public sendTweet(newTweet: Tweet): void {
-        // const newTweet = new Tweet(content,"Normal",this)
-
-        if (newTweet.user._username === this._username) {
-            this.tweets.push(newTweet)
-        } else {
-            throw Error("Não é possivel adicionar enviar tweet criado por outra pessoa")
+        if (newTweet.user._username != this._username) {
+            throw Error("It is not possible to add send a tweet created by someone else")
         }
+        if (newTweet.type !== "Normal") {
+            throw new Error("Invalid reply type. Type must be 'Normal'");
+        }
+        tweets.push(newTweet)
+
     }
 
     // Objetivo: adicionar seguidores
@@ -58,11 +59,11 @@ export class User {
     }
 
     // Objetivo: Mostrar a lista de seguidores do usuário logado
-    public showFollowers(): void{
-        console.log(`Followers of ${this._username}\n------------------------------------\n`);
+    public showFollowers(): void {
+        console.log(`FOLLOWERS OF ${this._username.toLocaleUpperCase()}\n------------------------------------\n`);
         this._followers.forEach(follow => {
-            console.log("Username: ",follow._username,"\n------------------------------------");
-            
+            console.log("Username: ", follow._username, "\n------------------------------------");
+
         })
     }
 
@@ -74,10 +75,11 @@ export class User {
     // Objetivo mostrar tweetes do
     private showTweet() {
 
-        console.log(`FEED DE TWEETS DO ${this._username.toLocaleUpperCase()} `);
+        console.log(`\nTWEETS FEED ${this._username.toLocaleUpperCase()} `);
 
-        this.tweets.forEach(tweet => {
+        tweets.forEach(tweet => {
             tweet.show(tweet, this.followers)
+
         });
 
 
@@ -95,7 +97,7 @@ export class User {
         let containsSpecialCharacter = false;
 
         if (this._password.length < 8) {
-            throw new Error("Senha deve ter no mínimo 8 caracteres.");
+            throw new Error("Password must have at least 8 characters.");
         }
 
         for (let i = 0; i <= this._password.length; i++) {
@@ -111,17 +113,17 @@ export class User {
                 break
             }
             if (i === this._password.length && !containsSpecialCharacter) {
-                throw new Error("Senha deve ter pelo menos um caractere especial.");
+                throw new Error("Password must have at least one special character.");
             }
         }
     }
 
-   // Objetiv: Verificar se username já esta cadastrado
+    // Objetiv: Verificar se username já esta cadastrado
     private checkUsername(): void {
         const existsUsername = users.some((user) => user.username === this.username);
 
         if (existsUsername) {
-            throw Error('Já existe esse username')
+            throw Error('This username already exists')
         }
     }
 
@@ -130,7 +132,7 @@ export class User {
         const existsEmail = users.some((user) => user.email === this.email)
 
         if (existsEmail) {
-            throw Error('Já existe esse e-mail cadastrado')
+            throw Error('This email already exists registered')
         }
     }
 
