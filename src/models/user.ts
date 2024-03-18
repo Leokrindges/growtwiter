@@ -75,25 +75,25 @@ export class User {
     // Objetivo mostrar tweetes do
     private showTweet() {
 
-        console.log(`\nTWEETS FEED ${this._username.toLocaleUpperCase()} `);
+        console.log(`________________________\n\n-- TWEETS FEED ${this._username.toLocaleUpperCase()}  -- \n________________________`);
 
-       // Inclui os próprios tweets do usuário no feed
-       const tweetsUserLogged = tweets.filter(tweet => this._id === tweet.user._id)
-       tweetsUserLogged.forEach(tweet => {
-        tweet.show(tweet, this._followers);
+        // Inclui os próprios tweets do usuário no feed
+        const tweetsUserLogged = tweets.filter(tweet => this._id === tweet.user._id)
+        tweetsUserLogged.forEach(tweet => {
+            tweet.show(tweet, this._followers);
 
-    });
+        });
 
-    // Obtém uma lista dos IDs dos usuários que o usuário logado segue
-    const followedUserIds = this._followers.map(follower => follower.id);
+        // Obtém uma lista dos IDs dos usuários que o usuário logado segue
+        const followedUserIds = this._followers.map(follower => follower.id);
 
-    // Filtra os tweets para mostrar apenas os tweets dos usuários seguidos
-    const tweetsToShow = tweets.filter(tweet => followedUserIds.includes(tweet.user.id) && tweet.user.id !== this.id);
+        // Filtra os tweets para mostrar apenas os tweets dos usuários seguidos
+        const tweetsToShow = tweets.filter(tweet => followedUserIds.includes(tweet.user.id) && tweet.user.id !== this.id);
 
-    // Exibe os tweets filtrados
-    tweetsToShow.forEach(tweet => {
-        tweet.show(tweet, this._followers);
-    });
+        // Exibe os tweets filtrados
+        tweetsToShow.forEach(tweet => {
+            tweet.show(tweet, this._followers);
+        });
 
 
     }
@@ -107,7 +107,7 @@ export class User {
     //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
     private checkPassword() {
 
-        var passwordValidator = require('password-validator'); 
+        var passwordValidator = require('password-validator');
 
         var schema = new passwordValidator();
 
@@ -116,8 +116,8 @@ export class User {
         schema.has().lowercase()
         schema.has().digits(2)
 
-        
-        if(!schema.validate(this._password)){
+
+        if (!schema.validate(this._password)) {
             throw new Error("The password must have no capital letters, 2 numbers and at least 8 characters in total");
 
         }

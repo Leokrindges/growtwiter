@@ -63,7 +63,7 @@ export class Tweet {
         });
 
         console.log(this.formattedTweets(tweet.user.username, this.content, whoLiked, counter),
-            this.showReplies(tweet));
+            this.showReplies(tweet), "\n--------------------------------------------");
     }
 
     private showTweetsFollowers(followers: User[]): void {
@@ -80,8 +80,8 @@ export class Tweet {
                         whoLiked = like.from.username
                     }
                 })
-                console.log(this.formattedTweets(tweetsFollowers._user.username, tweetsFollowers._content, whoLiked, counter),this.showReplies(tweetsFollowers))
-                
+                console.log(this.formattedTweets(tweetsFollowers._user.username, tweetsFollowers._content, whoLiked, counter), this.showReplies(tweetsFollowers), "---------------------------")
+
             })
         })
     }
@@ -103,7 +103,7 @@ export class Tweet {
     }
 
     private showReplies(tweet: Tweet): string {
-        
+
         let replyFormatted = "";
         this._replies.forEach((reply) => {
             replyFormatted += `  > @${reply.user.username}: ${reply.content}\n `;

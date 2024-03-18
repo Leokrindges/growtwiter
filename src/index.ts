@@ -1,12 +1,10 @@
 import { Tweet } from "./models/tweet";
 import { User } from "./models/user";
 
-
-
 //CRIA USUARIOS
-const leonardo = new User("Leonardo", "leo","leo@leo.com","Leo123Leo")
-const pedro = new User("pedro", "pedro","pedro@pedro.com","Pedro123pedro")
-const je = new User("je", "je","je@je.com","Je123jeje")
+const leonardo = new User("Leonardo", "leo", "leo@leo.com", "Leo123Leo")
+const pedro = new User("pedro", "pedro", "pedro@pedro.com", "Pedro123pedro")
+const je = new User("je", "je", "je@je.com", "Je123jeje")
 
 //ADD USER
 leonardo.createUsers(leonardo)
