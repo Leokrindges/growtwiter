@@ -122,7 +122,7 @@ export class User {
 
         }
 
-        //OUTRA MANEIRA DE FAZER COM USAR IMPORTAÇÃO DA NPM VALIDATOR PASSWORD
+        //OUTRA MANEIRA DE FAZER SEM USAR IMPORTAÇÃO DA NPM VALIDATOR PASSWORD
 
         // const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"];
         // let containsSpecialCharacter = false;
