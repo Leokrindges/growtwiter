@@ -77,10 +77,23 @@ export class User {
 
         console.log(`\nTWEETS FEED ${this._username.toLocaleUpperCase()} `);
 
-        tweets.forEach(tweet => {
-            tweet.show(tweet, this.followers)
+       // Inclui os próprios tweets do usuário no feed
+       const tweetsUserLogged = tweets.filter(tweet => this._id === tweet.user._id)
+       tweetsUserLogged.forEach(tweet => {
+        tweet.show(tweet, this._followers);
 
-        });
+    });
+    
+    // Obtém uma lista dos IDs dos usuários que o usuário logado segue
+    const followedUserIds = this._followers.map(follower => follower.id);
+
+    // Filtra os tweets para mostrar apenas os tweets dos usuários seguidos
+    const tweetsToShow = tweets.filter(tweet => followedUserIds.includes(tweet.user.id) && tweet.user.id !== this.id);
+
+    // Exibe os tweets filtrados
+    tweetsToShow.forEach(tweet => {
+        tweet.show(tweet, this._followers);
+    });
 
 
     }

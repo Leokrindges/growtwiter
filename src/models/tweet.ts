@@ -36,17 +36,17 @@ export class Tweet {
         return this._user
     }
 
-    reply(content: string, user: User) {
+    public reply(content: string, user: User) {
         const replyTweet = new Tweet(content, "Reply", user)
         this._replies.push(replyTweet);
     }
 
-    like(user: User): void {
+    public like(user: User): void {
         const newLike = new Like(user, this)
         likes.push(newLike);
     }
 
-    show(tweet: Tweet, followers: User[]): void {
+    public show(tweet: Tweet, followers: User[]): void {
         this.showTweetUserLogged(tweet);
         this.showTweetsFollowers(followers);
     }
