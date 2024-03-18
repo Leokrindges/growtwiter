@@ -83,7 +83,7 @@ export class User {
         tweet.show(tweet, this._followers);
 
     });
-    
+
     // Obtém uma lista dos IDs dos usuários que o usuário logado segue
     const followedUserIds = this._followers.map(follower => follower.id);
 
@@ -106,29 +106,47 @@ export class User {
 
     //Verifica se a senha tem no minímo 8 caracteres e também caracteres especiais.
     private checkPassword() {
-        const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"];
-        let containsSpecialCharacter = false;
 
-        if (this._password.length < 8) {
-            throw new Error("Password must have at least 8 characters.");
+        var passwordValidator = require('password-validator'); 
+
+        var schema = new passwordValidator();
+
+        schema.is().min(8)
+        schema.has().uppercase()
+        schema.has().lowercase()
+        schema.has().digits(2)
+
+        
+        if(!schema.validate(this._password)){
+            throw new Error("The password must have no capital letters, 2 numbers and at least 8 characters in total");
+
         }
 
-        for (let i = 0; i <= this._password.length; i++) {
+        //OUTRA MANEIRA DE FAZER COM USAR IMPORTAÇÃO DA NPM VALIDATOR PASSWORD
 
-            for (let j = 0; j < dictionaryCharacters.length; j++) {
-                if (dictionaryCharacters[j] === this._password[i]) {
-                    containsSpecialCharacter = true;
-                    break;  // Sai do loop interno assim que uma correspondência é encontrada.
-                }
-            }
-            if (containsSpecialCharacter) {
-                this._password = this._password;
-                break
-            }
-            if (i === this._password.length && !containsSpecialCharacter) {
-                throw new Error("Password must have at least one special character.");
-            }
-        }
+        // const dictionaryCharacters = ["!", "@", "#", "$", "%", "&"];
+        // let containsSpecialCharacter = false;
+
+        // if (this._password.length < 8) {
+        //     throw new Error("Password must have at least 8 characters.");
+        // }
+
+        // for (let i = 0; i <= this._password.length; i++) {
+
+        //     for (let j = 0; j < dictionaryCharacters.length; j++) {
+        //         if (dictionaryCharacters[j] === this._password[i]) {
+        //             containsSpecialCharacter = true;
+        //             break;  // Sai do loop interno assim que uma correspondência é encontrada.
+        //         }
+        //     }
+        //     if (containsSpecialCharacter) {
+        //         this._password = this._password;
+        //         break
+        //     }
+        //     if (i === this._password.length && !containsSpecialCharacter) {
+        //         throw new Error("Password must have at least one special character.");
+        //     }
+        // }
     }
 
     // Objetiv: Verificar se username já esta cadastrado

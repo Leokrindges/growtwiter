@@ -4,13 +4,14 @@ import { User } from "./models/user";
 
 
 //CRIA USUARIOS
-const leonardo = new User("Leonardo", "leo","leo@leo.com","123%45689")
-const pedro = new User("pedro", "pedro","pedro@pedro.com","123456@89")
-const je = new User("je", "je","je@je.com","123456@89")
+const leonardo = new User("Leonardo", "leo","leo@leo.com","Leo123Leo")
+const pedro = new User("pedro", "pedro","pedro@pedro.com","Pedro123pedro")
+const je = new User("je", "je","je@je.com","Je123jeje")
 
 //ADD USER
 leonardo.createUsers(leonardo)
-// pedro.createUsers(pedro)
+pedro.createUsers(pedro)
+je.createUsers(je)
 
 const tweet1 = new Tweet("first tweet leo", "Normal", leonardo);
 const tweet2 = new Tweet("second tweet leo", "Normal", leonardo);
